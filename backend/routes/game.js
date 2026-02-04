@@ -30,8 +30,12 @@ router.post("/new-round", (req, res) => {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Ler o JSON manualmente
-const charactersPath = path.join(__dirname, "../data/characterInfo.json");
+// Ler o JSON manualmente - works for both local (/backend/routes) and Vercel (/api)
+let charactersPath = path.join(__dirname, "../data/characterInfo.json");
+if (!fs.existsSync(charactersPath)) {
+  // Fallback for Vercel (when called from /api)
+  charactersPath = path.join(__dirname, "../../backend/data/characterInfo.json");
+}
 const characters = JSON.parse(fs.readFileSync(charactersPath, "utf-8"));
 
 // Escolhe personagem do dia (random por enquanto)
